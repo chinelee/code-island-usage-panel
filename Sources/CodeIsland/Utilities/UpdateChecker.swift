@@ -7,8 +7,8 @@ import AppKit
 /// — uses the public Releases API, no auth or telemetry.
 @MainActor
 final class UpdateChecker: ObservableObject {
-    private let releaseURL = URL(string: "https://api.github.com/repos/rifqiakrm/code-island/releases/latest")!
-    private let releasePageURL = URL(string: "https://github.com/rifqiakrm/code-island/releases/latest")!
+    private let releaseURL = URL(string: "https://api.github.com/repos/chinelee/code-island-usage-panel/releases/latest")!
+    private let releasePageURL = URL(string: "https://github.com/chinelee/code-island-usage-panel/releases/latest")!
 
     @Published var latestVersion: String? = nil
     @Published var lastCheckedAt: Date? = nil
@@ -57,7 +57,7 @@ final class UpdateChecker: ObservableObject {
         do {
             var req = URLRequest(url: releaseURL, timeoutInterval: 12)
             req.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
-            req.setValue("code-island/\(currentVersion)", forHTTPHeaderField: "User-Agent")
+            req.setValue("code-island-usage-panel/\(currentVersion)", forHTTPHeaderField: "User-Agent")
             let (data, response) = try await URLSession.shared.data(for: req)
             guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
                 lastError = "Couldn't reach GitHub Releases."

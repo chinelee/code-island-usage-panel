@@ -39,9 +39,22 @@ struct ProviderUsage {
     let fiveHour: RateLimit?
     let sevenDay: RateLimit?
     let plan: String?
+    let accountEmail: String?
+    let accountIDSuffix: String?
+    let creditsBalance: String?
+    let availableModels: [String]
     let error: String?
 
-    static let empty = ProviderUsage(fiveHour: nil, sevenDay: nil, plan: nil, error: nil)
+    static let empty = ProviderUsage(
+        fiveHour: nil,
+        sevenDay: nil,
+        plan: nil,
+        accountEmail: nil,
+        accountIDSuffix: nil,
+        creditsBalance: nil,
+        availableModels: [],
+        error: nil
+    )
 }
 
 /// Fetches usage for every supported provider in parallel on a 5-minute timer
@@ -82,11 +95,9 @@ final class RateLimitStore: ObservableObject {
 
     /// Run all providers' fetchers concurrently and store the resulting snapshots.
     func refresh() async {
-        async let claude = UsageFetcher.fetchClaude()
-        async let codex  = UsageFetcher.fetchCodex()
-        let (c, cx) = await (claude, codex)
-        usage["claude"] = Self.snapshot(from: c)
-        usage["codex"]  = Self.snapshot(from: cx)
+        let codex = await UsageFetcher.fetchCodex()
+        usage["claude"] = .empty
+        usage["codex"] = Self.snapshot(from: codex)
     }
 
     private static func snapshot(from app: AppUsage) -> ProviderUsage {
@@ -94,6 +105,10 @@ final class RateLimitStore: ObservableObject {
             fiveHour: RateLimit(window: app.fiveHour),
             sevenDay: RateLimit(window: app.weekly),
             plan: app.plan,
+            accountEmail: app.accountEmail,
+            accountIDSuffix: app.accountIDSuffix,
+            creditsBalance: app.creditsBalance,
+            availableModels: app.availableModels,
             error: app.fiveHour.error ?? app.weekly.error
         )
     }

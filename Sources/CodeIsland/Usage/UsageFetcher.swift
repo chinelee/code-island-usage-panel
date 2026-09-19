@@ -32,10 +32,21 @@ enum UsageFetcher {
                   let rl = obj["rate_limit"] as? [String: Any] else {
                 return errorPair("parse error")
             }
-            return AppUsage(
-                fiveHour: parseCodexWindow(rl["primary_window"]),
-                weekly: parseCodexWindow(rl["secondary_window"]),
-                plan: obj["plan_type"] as? String
+            let accountID = obj["account_id"] as? String
+            let credits = obj["credits"] as? [String: Any]
+            let modelUsage = obj["model_usage"] as? [String: Any] ?? [:]
+            let availableModels = modelUsage.compactMap { key, value -> String? in
+                guard let details = value as? [String: Any] else { return nil }
+                if let available = details["available"] as? Bool, !available { return nil }
+                return key
+            }.sorted()
+            return makeCodexUsage(
+                rateLimit: rl,
+                plan: obj["plan_type"] as? String,
+                accountEmail: obj["email"] as? String,
+                accountIDSuffix: accountID.map { String($0.suffix(6)) },
+                creditsBalance: credits?["balance"] as? String,
+                availableModels: availableModels
             )
         } catch {
             return errorPair(error.localizedDescription)
@@ -63,6 +74,42 @@ enum UsageFetcher {
         let used = (d["used_percent"] as? Double) ?? 0
         let resetAt = (d["reset_at"] as? Double).map { Date(timeIntervalSince1970: $0) }
         return WindowUsage(usedPercent: used / 100, resetAt: resetAt, error: nil)
+    }
+
+    /// The API used to guarantee primary=5h and secondary=7d. It now returns
+    /// plan-dependent windows (some Pro accounts expose a weekly primary and
+    /// no secondary), so classify them by their declared duration instead of
+    /// their array position.
+    static func makeCodexUsage(
+        rateLimit: [String: Any],
+        plan: String?,
+        accountEmail: String? = nil,
+        accountIDSuffix: String? = nil,
+        creditsBalance: String? = nil,
+        availableModels: [String] = []
+    ) -> AppUsage {
+        var shortWindow: WindowUsage = .unknown
+        var weeklyWindow: WindowUsage = .unknown
+
+        for key in ["primary_window", "secondary_window"] {
+            guard let object = rateLimit[key] as? [String: Any] else { continue }
+            let parsed = parseCodexWindow(object)
+            let seconds = (object["limit_window_seconds"] as? NSNumber)?.doubleValue ?? 0
+            if seconds >= 3 * 24 * 60 * 60 {
+                weeklyWindow = parsed
+            } else {
+                shortWindow = parsed
+            }
+        }
+        return AppUsage(
+            fiveHour: shortWindow,
+            weekly: weeklyWindow,
+            plan: plan,
+            accountEmail: accountEmail,
+            accountIDSuffix: accountIDSuffix,
+            creditsBalance: creditsBalance,
+            availableModels: availableModels
+        )
     }
 
     // MARK: - Claude

@@ -2,11 +2,11 @@
 
 <img src="design/logo.png" alt="Code Island" width="116" />
 
-<h1>Code Island</h1>
+<h1>Code Island Usage Panel</h1>
 
-<p><b>Turn your MacBook's notch into a live dashboard for your AI coding agents.</b></p>
+<p><b>A detailed Codex, Claude, and WorkBuddy usage dashboard in your MacBook notch.</b></p>
 
-<p>Approve permissions, answer questions, track rate limits, and jump between<br/>terminals — all from the notch. Works with <b>17 AI coding agents</b> — Claude Code, Codex, Gemini, Cursor, Copilot, and more — out of the box.</p>
+<p>Track Codex quota, local Token consumption, model mix, cache usage, and live<br/>agent sessions while retaining Code Island's permission and session controls.</p>
 
 <p>
 <img src="https://img.shields.io/badge/macOS-14%2B-1d1d1f?logo=apple&logoColor=white" alt="macOS 14+" />
@@ -18,12 +18,19 @@
 
 <!-- Demo GIF is hosted as a GitHub release asset (tag: media), not committed to
      the repo, so clones/pulls stay small. -->
-<img src="https://github.com/rifqiakrm/code-island/releases/download/media/readme-demo.gif" alt="Code Island in action — the notch cycling through session list, permission, themes, and the 17 agent mascots" width="760" />
+<img src="https://github.com/rifqiakrm/code-island/releases/download/media/readme-demo.gif" alt="Upstream Code Island session and permission demo" width="760" />
 
 </div>
 
+> [!IMPORTANT]
+> This is a modified GPLv3 fork of [rifqiakrm/code-island](https://github.com/rifqiakrm/code-island). The animation above demonstrates the upstream session and permission experience; this fork adds the integrated usage panel described below. See [MODIFICATIONS.md](MODIFICATIONS.md) for attribution, data sources, and the complete change summary.
+
 ## Features
 
+- **Integrated usage dashboard** — Codex account, plan, weekly quota, reset time, Credits, and available-model status in one expanded notch
+- **Detailed local Token analytics** — rolling 1-hour and 24-hour totals by tool and model, plus input, output, cache-read, and cache-write breakdowns
+- **Live operational detail** — Codex, Claude, and WorkBuddy sessions show model, tool, reasoning effort, duration, status, and locally matched session Tokens where supported
+- **Compact resting notch** — stays close to the physical cutout and expands only on hover
 - **17 AI coding agents** — Claude Code, Codex, Gemini, Qwen, Qoder, Factory, CodeBuddy, Cursor, Copilot, Kimi, OpenCode, Cline, Kiro, Pi, Oh My Pi, AntiGravity, and Hermes — side by side in one notch
 - **Live session tracking** — every running agent visible at a glance, grouped by provider
 - **Permission UI** — approve, deny, allow-all, or flip into `⏵⏵ auto mode` from the notch without switching apps (Codex keeps a broad bypass)
@@ -73,14 +80,24 @@ Code Island auto-installs hooks for every agent it detects on launch — install
 
 - macOS 14 (Sonoma) or later
 - At least one supported AI coding agent (see [Supported Tools](#supported-tools))
+- Codex authentication for official Codex quota details
+- Optional: OpenToken installed separately for the detailed local Token dashboard. This repository does not bundle or install OpenToken.
+
+## Usage dashboard privacy
+
+- The panel calls OpenToken with `upload --dry-run --full --v2`; the panel invocation does not upload data.
+- An independently installed OpenToken service may upload aggregates according to its own configuration. Audit it with `opentoken privacy`.
+- Local Claude/Codex session logs are used only to calculate matched session totals. Conversation text is not displayed or transmitted by this panel.
+- Claude Desktop subscription quota is intentionally not shown because there is no reliable supported endpoint for it.
+- Local QA captures and account-bearing screenshots are excluded from Git.
 
 ## Installation
 
-1. Download the latest DMG from [Releases](https://github.com/rifqiakrm/code-island/releases)
-2. Drag `Code Island.app` to Applications
+1. Download the latest DMG from [this fork's Releases](https://github.com/chinelee/code-island-usage-panel/releases)
+2. Drag `Code Island Usage Panel.app` to Applications
 3. **For unsigned builds**, run this first to bypass Gatekeeper:
    ```bash
-   xattr -cr /Applications/Code\ Island.app
+   xattr -cr /Applications/Code\ Island\ Usage\ Panel.app
    ```
 4. Launch Code Island — hooks for every detected provider install automatically
 5. Start a session in any supported agent and watch the notch come alive
@@ -146,7 +163,7 @@ To build the DMG installer (requires `create-dmg`):
 
 ```bash
 brew install create-dmg
-./scripts/build-dmg.sh 1.0.0   # produces build/Code-Island-1.0.0.dmg
+./scripts/build-dmg.sh 1.4.10.1   # produces build/Code-Island-Usage-Panel-1.4.10.1.dmg
 ```
 
 ## Development
@@ -198,12 +215,13 @@ Code Island is free and built in my spare time. If it's saved you a few context-
 
 ## License
 
-**Free & open source under the [GNU GPLv3](LICENSE).** © 2026 Rifqi Akram.
+**Free & open source under the [GNU GPLv3](LICENSE).** Original project © 2026 Rifqi Akram. Fork modifications © 2026 ChineLee.
 
 You're free to use, modify, and redistribute it — with one condition: any distributed fork or derivative must also be open source under GPLv3 (it can't be closed-sourced or shipped proprietary).
 
 ## Acknowledgements
 
+- [Code Island](https://github.com/rifqiakrm/code-island) by [Rifqi Akram](https://github.com/rifqiakrm) — upstream application, hook bridge, session model, permissions UI, themes, and notch foundation
 - [Vibe Island](https://vibeisland.app) — the original inspiration for a notch-based agent dashboard
 - [Vibe Notch](https://github.com/farouqaldori/vibe-notch) by [@farouqaldori](https://github.com/farouqaldori) — the notch mascot is taken directly from this project
 

@@ -3,7 +3,7 @@
 # Requires: swift, create-dmg (brew install create-dmg), sips, iconutil
 set -e
 
-VERSION="${1:-0.6.0}"
+VERSION="${1:-1.4.10.1}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
@@ -24,7 +24,7 @@ done
 iconutil -c icns build/AppIcon.iconset -o build/AppIcon.icns
 
 echo "==> Assembling app bundle"
-APP="build/Code Island.app"
+APP="build/Code Island Usage Panel.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Helpers" "$APP/Contents/Resources"
 cp .build/release/CodeIsland "$APP/Contents/MacOS/Code Island"
@@ -44,9 +44,9 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleExecutable</key>
     <string>Code Island</string>
     <key>CFBundleIdentifier</key>
-    <string>dev.codeisland.macos</string>
+    <string>io.github.chinelee.code-island-usage-panel</string>
     <key>CFBundleName</key>
-    <string>Code Island</string>
+    <string>Code Island Usage Panel</string>
     <key>CFBundleVersion</key>
     <string>$VERSION</string>
     <key>CFBundleShortVersionString</key>
@@ -62,7 +62,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 PLIST
 
 echo "==> Building DMG"
-DMG="build/Code-Island-${VERSION}.dmg"
+DMG="build/Code-Island-Usage-Panel-${VERSION}.dmg"
 rm -f "$DMG"
 create-dmg \
   --volname "Code Island" \
@@ -71,9 +71,9 @@ create-dmg \
   --window-pos 200 120 \
   --window-size 660 425 \
   --icon-size 120 \
-  --icon "Code Island.app" 170 205 \
+  --icon "Code Island Usage Panel.app" 170 205 \
   --app-drop-link 490 205 \
-  --hide-extension "Code Island.app" \
+  --hide-extension "Code Island Usage Panel.app" \
   --no-internet-enable \
   "$DMG" \
   "$APP"

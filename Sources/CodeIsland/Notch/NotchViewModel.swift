@@ -22,20 +22,20 @@ final class NotchViewModel: ObservableObject {
     // Computed properties so they re-evaluate when display parameters change.
     static var notchOverlap: CGFloat { ScreenDetector.hasNotch ? ScreenDetector.notchHeight : 0 }
 
-    // Size adapts to the OS-reported notch cutout (safeAreaInsets.top + auxiliary
-    // top areas). Width extends ~50pt beyond the notch on each side so the
-    // mascot and session count have room. Height is notch height + small buffer.
+    // Keep the resting island almost flush with the physical cutout. A wide
+    // always-on pill competes with menu-bar status icons; full status remains
+    // available when the user hovers and the dashboard expands.
     static var collapsedSize: NSSize {
         // No hardware notch (external display / older Mac): render a real bar
         // hanging from the top-center instead of a 5pt hover sliver, which read
         // as "smushed". NotchShape gives it the flat-top/rounded-bottom look.
         guard ScreenDetector.hasNotch else { return NSSize(width: 230, height: 32) }
-        let width = max(280, ScreenDetector.notchWidth + 100)
+        let width = max(190, ScreenDetector.notchWidth + 12)
         let height = ScreenDetector.notchHeight
         return NSSize(width: width, height: height)
     }
-    // Expanded: compact, fits ~3 session cards
-    static let expandedSize = NSSize(width: 600, height: 320)
+    // Expanded: integrated quota, token-usage and live-session dashboard.
+    static let expandedSize = NSSize(width: 620, height: 760)
     // Permission: wide enough for details
     static let permissionSize = NSSize(width: 600, height: 380)
     // Question: taller for multiple questions
@@ -139,6 +139,13 @@ final class NotchViewModel: ObservableObject {
 
     // MARK: - Auto-collapse
     private var autoCollapseTask: Task<Void, Never>?
+    private var keepsDashboardOpenForPreview = false
+
+    func enableDashboardPreview() {
+        keepsDashboardOpenForPreview = true
+        autoCollapseTask?.cancel()
+        state = .expanded
+    }
 
     func expand(holdSeconds: Double? = nil) {
         guard state == .collapsed else { return }
@@ -200,6 +207,7 @@ final class NotchViewModel: ObservableObject {
     }
 
     private func scheduleAutoCollapse(delay: Double = 0.6) {
+        guard !keepsDashboardOpenForPreview else { return }
         autoCollapseTask?.cancel()
         autoCollapseTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(delay))
@@ -224,6 +232,7 @@ final class NotchViewModel: ObservableObject {
 
     func mouseExited() {
         isHovered = false
+        guard !keepsDashboardOpenForPreview else { return }
         // Never auto-collapse permission/plan/question states — user must respond
         switch state {
         case .permission, .plan, .question:

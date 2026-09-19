@@ -24,5 +24,10 @@ let package = Package(
             name: "CodeIslandBridge",
             path: "Sources/CodeIslandBridge"
         ),
+        .testTarget(
+            name: "CodeIslandTests",
+            dependencies: ["CodeIsland"],
+            path: "Tests/CodeIslandTests"
+        ),
     ]
 )

@@ -13,6 +13,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let soundEngine = SoundEngine()
     private let settingsStore = SettingsStore()
     private let rateLimitStore = RateLimitStore()
+    private let openTokenStore = OpenTokenUsageStore()
+    private let sessionTokenStore = SessionTokenUsageStore()
     private let codexAppServer = CodexAppServerClient()
     private let updateChecker = UpdateChecker()
     private var cancellables = Set<AnyCancellable>()
@@ -68,9 +70,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         notchWindowController = NotchWindowController(
             sessionStore: sessionStore,
             settingsStore: settingsStore,
-            rateLimitStore: rateLimitStore
+            rateLimitStore: rateLimitStore,
+            openTokenStore: openTokenStore,
+            sessionTokenStore: sessionTokenStore
         )
         notchWindowController?.showWindow(nil)
+        if ProcessInfo.processInfo.arguments.contains("--preview-dashboard") {
+            notchWindowController?.showDashboardForPreview()
+        }
         let screen = ScreenDetector.notchScreen
         log("Notch window shown, frame: \(notchWindowController?.window?.frame ?? .zero)")
         log("Screen frame: \(screen.frame)")

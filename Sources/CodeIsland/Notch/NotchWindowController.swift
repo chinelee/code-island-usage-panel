@@ -7,13 +7,23 @@ final class NotchWindowController: NSWindowController {
     private let sessionStore: SessionStore
     private let settingsStore: SettingsStore
     private let rateLimitStore: RateLimitStore
+    private let openTokenStore: OpenTokenUsageStore
+    private let sessionTokenStore: SessionTokenUsageStore
     private var cancellables = Set<AnyCancellable>()
     private var trackingArea: NSTrackingArea?
 
-    init(sessionStore: SessionStore, settingsStore: SettingsStore, rateLimitStore: RateLimitStore) {
+    init(
+        sessionStore: SessionStore,
+        settingsStore: SettingsStore,
+        rateLimitStore: RateLimitStore,
+        openTokenStore: OpenTokenUsageStore,
+        sessionTokenStore: SessionTokenUsageStore
+    ) {
         self.sessionStore = sessionStore
         self.settingsStore = settingsStore
         self.rateLimitStore = rateLimitStore
+        self.openTokenStore = openTokenStore
+        self.sessionTokenStore = sessionTokenStore
         self.viewModel = NotchViewModel()
 
         let initialFrame = ScreenDetector.notchPanelFrame(
@@ -29,6 +39,8 @@ final class NotchWindowController: NSWindowController {
             viewModel: viewModel,
             sessionStore: sessionStore,
             rateLimitStore: rateLimitStore,
+            openTokenStore: openTokenStore,
+            sessionTokenStore: sessionTokenStore,
             settingsStore: settingsStore,
             onPermissionRespond: { [weak self] sessionId, action in
                 self?.sessionStore.respondToPermission(sessionId: sessionId, action: action)
@@ -82,6 +94,13 @@ final class NotchWindowController: NSWindowController {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not supported")
+    }
+
+    /// Development/QA entry point. Normal users still open the dashboard by
+    /// hovering the notch; `--preview-dashboard` makes visual regression checks
+    /// deterministic without changing production behavior.
+    func showDashboardForPreview() {
+        viewModel.enableDashboardPreview()
     }
 
     func handleSessionEvent(_ event: SessionEvent) {

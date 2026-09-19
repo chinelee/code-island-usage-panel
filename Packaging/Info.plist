@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key>
+    <string>Code Island</string>
+    <key>CFBundleIdentifier</key>
+    <string>io.github.chinelee.code-island-usage-panel</string>
+    <key>CFBundleName</key>
+    <string>Code Island Usage Panel</string>
+    <key>CFBundleVersion</key>
+    <string>1.4.10</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.4.10</string>
+    <key>LSUIElement</key>
+    <true/>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+</dict>
+</plist>

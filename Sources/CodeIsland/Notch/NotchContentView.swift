@@ -4,6 +4,8 @@ struct NotchContentView: View {
     @ObservedObject var viewModel: NotchViewModel
     @ObservedObject var sessionStore: SessionStore
     @ObservedObject var rateLimitStore: RateLimitStore
+    @ObservedObject var openTokenStore: OpenTokenUsageStore
+    @ObservedObject var sessionTokenStore: SessionTokenUsageStore
     @ObservedObject var settingsStore: SettingsStore
     let onPermissionRespond: (String, PermissionAction) -> Void
     let onOpenSettings: () -> Void
@@ -91,11 +93,12 @@ struct NotchContentView: View {
             CollapsedNotchView(sessionStore: sessionStore, rateLimitStore: rateLimitStore)
 
         case .expanded:
-            SessionListView(
+            IntegratedUsagePanel(
                 sessionStore: sessionStore,
                 rateLimitStore: rateLimitStore,
+                openTokenStore: openTokenStore,
+                sessionTokenStore: sessionTokenStore,
                 settingsStore: settingsStore,
-                onCollapse: { viewModel.collapse() },
                 onOpenSettings: onOpenSettings
             )
 
