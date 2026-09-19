@@ -93,14 +93,16 @@ Code Island auto-installs hooks for every agent it detects on launch — install
 
 ## Installation
 
-1. Download the latest DMG from [this fork's Releases](https://github.com/chinelee/code-island-usage-panel/releases)
-2. Drag `Code Island Usage Panel.app` to Applications
-3. **For unsigned builds**, run this first to bypass Gatekeeper:
-   ```bash
-   xattr -cr /Applications/Code\ Island\ Usage\ Panel.app
-   ```
-4. Launch Code Island — hooks for every detected provider install automatically
-5. Start a session in any supported agent and watch the notch come alive
+Prebuilt packages are not published yet. Build the current version from source:
+
+```bash
+git clone https://github.com/chinelee/code-island-usage-panel.git
+cd code-island-usage-panel
+swift build -c release
+.build/release/CodeIsland
+```
+
+The first launch installs hooks for detected providers. Open Codex, Claude, or WorkBuddy and move the pointer over the notch to expand the dashboard.
 
 ## How It Works
 
