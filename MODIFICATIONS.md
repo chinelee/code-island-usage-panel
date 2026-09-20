@@ -8,6 +8,7 @@ The upstream project and this fork are distributed under the GNU General Public 
 
 - Replaces the default expanded session list with an integrated usage dashboard.
 - Keeps the collapsed notch close to the physical MacBook notch width.
+- Disables proactive expansion for agent events by default while keeping pending actions available on hover.
 - Shows the current Codex account, plan, weekly quota, reset time, Credits balance, and available models.
 - Reads OpenToken's local dry-run output to render rolling 1-hour and 24-hour usage without uploading from this app.
 - Breaks usage down by tool, model, input, output, cache read, and cache write.

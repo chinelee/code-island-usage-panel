@@ -294,10 +294,10 @@ struct SettingsView: View {
         }
 
         Section("Behavior") {
-            Toggle(isOn: $settingsStore.autoExpandOnPermission) {
+            Toggle(isOn: $settingsStore.autoExpandForEvents) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Auto-expand on permission request")
-                    Text("Pop the notch open whenever a session is waiting for your approval.")
+                    Text("Auto-expand for agent events")
+                    Text("Open the notch for completions, permissions, plans, and questions. When off, hover the notch to review them.")
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
                 }

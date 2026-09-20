@@ -119,16 +119,20 @@ final class NotchWindowController: NSWindowController {
 
             switch event {
             case .permissionRequested(let sessionId):
+                guard settingsStore.autoExpandForEvents else { return }
                 guard !isAlreadyDeciding else { return }
                 let height = computePermissionHeight(sessionId: sessionId)
                 viewModel.showPermission(sessionId: sessionId, contentHeight: height)
             case .planRequested(let sessionId):
+                guard settingsStore.autoExpandForEvents else { return }
                 guard !isAlreadyDeciding else { return }
                 viewModel.showPlan(sessionId: sessionId)
             case .questionAsked(let sessionId):
+                guard settingsStore.autoExpandForEvents else { return }
                 guard !isAlreadyDeciding else { return }
                 viewModel.showQuestion(sessionId: sessionId)
             case .statusChanged(let sessionId, let status) where status == .idle:
+                guard settingsStore.autoExpandForEvents else { return }
                 // Claude finished — show focused notification card
                 if !viewModel.isExpanded {
                     let height = computeFinishedHeight(sessionId: sessionId)

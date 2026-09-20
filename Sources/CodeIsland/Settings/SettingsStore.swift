@@ -12,6 +12,12 @@ final class SettingsStore: ObservableObject {
     @Published var autoExpandOnPermission: Bool {
         didSet { UserDefaults.standard.set(autoExpandOnPermission, forKey: "autoExpandOnPermission") }
     }
+    /// Whether agent events may proactively open the notch. Default off: the
+    /// notch still reflects state while collapsed, and hovering surfaces any
+    /// pending permission, plan, or question on demand.
+    @Published var autoExpandForEvents: Bool {
+        didSet { UserDefaults.standard.set(autoExpandForEvents, forKey: "autoExpandForEvents") }
+    }
     @Published var launchAtLogin: Bool {
         didSet {
             UserDefaults.standard.set(launchAtLogin, forKey: "launchAtLogin")
@@ -114,6 +120,7 @@ final class SettingsStore: ObservableObject {
             "soundEnabled": true,
             "soundVolume": Float(0.7),
             "autoExpandOnPermission": true,
+            "autoExpandForEvents": false,
             "launchAtLogin": false,
             "hasCompletedOnboarding": false,
             "soundSessionStart": true,
@@ -128,6 +135,7 @@ final class SettingsStore: ObservableObject {
         self.soundEnabled = defaults.bool(forKey: "soundEnabled")
         self.soundVolume = defaults.float(forKey: "soundVolume")
         self.autoExpandOnPermission = defaults.bool(forKey: "autoExpandOnPermission")
+        self.autoExpandForEvents = defaults.bool(forKey: "autoExpandForEvents")
         self.launchAtLogin = defaults.bool(forKey: "launchAtLogin")
         self.hasCompletedOnboarding = defaults.bool(forKey: "hasCompletedOnboarding")
         // Load per-event assignments, or migrate once from the old toggles

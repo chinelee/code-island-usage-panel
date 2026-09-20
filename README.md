@@ -31,6 +31,7 @@
 - **Detailed local Token analytics** — rolling 1-hour and 24-hour totals by tool and model, plus input, output, cache-read, and cache-write breakdowns
 - **Live operational detail** — Codex, Claude, and WorkBuddy sessions show model, tool, reasoning effort, duration, status, and locally matched session Tokens where supported
 - **Compact resting notch** — stays close to the physical cutout and expands only on hover
+- **Quiet by default** — completions, permissions, plans, and questions update the collapsed state without proactively opening the panel; hover to review them
 - **17 AI coding agents** — Claude Code, Codex, Gemini, Qwen, Qoder, Factory, CodeBuddy, Cursor, Copilot, Kimi, OpenCode, Cline, Kiro, Pi, Oh My Pi, AntiGravity, and Hermes — side by side in one notch
 - **Live session tracking** — every running agent visible at a glance, grouped by provider
 - **Permission UI** — approve, deny, allow-all, or flip into `⏵⏵ auto mode` from the notch without switching apps (Codex keeps a broad bypass)
